@@ -1,24 +1,29 @@
 class SessionsController < ApplicationController
 
   def create
-    user = User.find_by_credentials(params[:user][:username], params[:user][:password])
+    @user = User.find_by_credentials(params[:user][:email], params[:user][:password])
 
-    if user
-      log_in_user!(user)
-      render :show
+    if @user
+      log_in_user!(@user)
+      redirect_to user_url(@user)
     else
-      render json: "Username/password combination doesn't exist"
+      flash[:notice] = "Incorrect Credentials!"
+      render :new
     end
   end
 
   def new
+    if logged_in?
+      return redirect_to user_url(current_user)
+    end
+
     @user = User.new
     render :new
   end
 
-  def delete
+  def destroy
     log_out_user!
-    #add redirect
+    redirect_to new_session_url
   end
 
 end

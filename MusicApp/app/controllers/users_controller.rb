@@ -5,7 +5,7 @@ class UsersController < ApplicationController
 
     if @user.save
       log_in_user!(@user)
-      #redirect later
+      redirect_to user_url(@user)
     else
       render json: @user.errors.full_messages, status: 422
     end
@@ -17,9 +17,8 @@ class UsersController < ApplicationController
   end
 
   def show
-    debugger
-    user = User.find(params[:id])
-    render json: user
+    @user = User.find(params[:id])
+    render :show
   end
 
   # def update
